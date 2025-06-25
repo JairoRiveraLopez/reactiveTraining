@@ -24,15 +24,10 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
     private final LedgerService       ledgerService;
 
-    /* ------------------------------------------------------------------ */
-    /*  MÉTODOS CRUD REACTIVOS                                            */
-    /* ------------------------------------------------------------------ */
-
     /** Alta de transacción + post-proceso en Ledger */
     public Mono<Transaction> createTransaction(CreateTransactionRequest req) {
 
         Transaction tx = new Transaction();
-        tx.setId(UUID.randomUUID());
         tx.setAmount(req.getAmount());
         tx.setCurrency(req.getCurrency());
         tx.setType(req.getType());
@@ -87,10 +82,6 @@ public class TransactionService {
                         : Mono.error(new RuntimeException("Transaction not found: " + id)))
                 .doOnSuccess(v -> log.info("Deleted: {}", id));
     }
-
-    /* ------------------------------------------------------------------ */
-    /*  Llamada a Ledger (idéntica a la versión Mongo)                    */
-    /* ------------------------------------------------------------------ */
 
     private Mono<Transaction> processWithLedger(Transaction tx) {
         LedgerRequest lr = new LedgerRequest(tx.getId(), tx.getAmount(),

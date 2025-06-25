@@ -15,7 +15,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("transaction")
+@Table("transactions")
 public class Transaction {
 
     @Id
