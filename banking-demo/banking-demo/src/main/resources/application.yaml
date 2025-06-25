@@ -1,0 +1,14 @@
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5433/postgres
+    username: postgres
+    password: 1Q22w33e4**
+    properties:
+      lock_timeout: 30000
+
+  sql:
+    init:
+      mode: always
+
+server:
+  port: 8080
