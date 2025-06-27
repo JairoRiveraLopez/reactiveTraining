@@ -5,6 +5,7 @@ import com.transactions.banking_demo.dto.UpdateTransactionStatusRequest;
 import com.transactions.banking_demo.entities.Transaction;
 import com.transactions.banking_demo.entities.TransactionStatus;
 import com.transactions.banking_demo.entities.TransactionType;
+import com.transactions.banking_demo.services.LedgerRequestReplyClient;
 import com.transactions.banking_demo.services.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -21,12 +22,16 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TransactionHandler {
 
-    private final TransactionService transactionService;
     private static final Logger log = LoggerFactory.getLogger(TransactionHandler.class);
+
+    private final TransactionService transactionService;
+    private final LedgerRequestReplyClient ledgerClient;
+
 
     public Mono<ServerResponse> createTransaction(ServerRequest request) {
         return request.bodyToMono(CreateTransactionRequest.class)
                 .flatMap(transactionService::createTransaction)
+                .flatMap(ledgerClient::sendTransaction)
                 .flatMap(transaction -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)
                         .bodyValue(transaction))

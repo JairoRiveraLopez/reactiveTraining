@@ -1,4 +1,15 @@
 spring:
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    listener:
+      simple:
+        concurrency: 1
+        max-concurrency: 5
+
   r2dbc:
     url: r2dbc:postgresql://localhost:5433/postgres
     username: postgres
