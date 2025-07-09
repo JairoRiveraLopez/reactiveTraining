@@ -19,11 +19,12 @@ public class ReactiveEventsGateway implements EventsGateway {
 
     private static final Map<Class<?>, String> ROUTING = Map.of(
             BoxCreatedEvent.class       , "box.event.created",
-            BoxNameUpdatedEvent.class   , "box.event.name.updated",
+            BoxNameUpdatedEvent.class   , "box.event.updateName",
             BoxDeletedEvent.class       , "box.event.deleted",
             BoxClosedEvent.class        , "box.event.closed",
             BoxOpenedEvent.class        , "box.event.opened",
-            BoxReopenedEvent.class      , "box.event.reopened"
+            BoxReopenedEvent.class      , "box.event.reopened",
+            BoxMovementsUploadedEvent.class      , "box.event.massiveMovements"
     );
 
     private final DomainEventBus domainEventBus;
@@ -40,8 +41,8 @@ public class ReactiveEventsGateway implements EventsGateway {
                 new DomainEvent<>(routingKey, UUID.randomUUID().toString(), event);
 
         return Mono.from(domainEventBus.emit(message))
-                .doOnSubscribe(s -> log.fine(() ->
-                        String.format("Emitiendo evento [%s]", routingKey)))
+                .doOnSubscribe(s -> log.info(() ->
+                        "Emitiendo evento [" + routingKey + "]"))
                 .doOnError(e -> log.severe(String.format(
                         "Fallo al emitir [%s]: %s", routingKey, e.getMessage())));
     }
